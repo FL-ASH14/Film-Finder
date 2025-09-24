@@ -11,7 +11,7 @@ const MovieGrid = ({ movies, onSelect }) => {
           onClick={() => onSelect(movie)}
         >
           <img
-            src={movie.poster}
+            src={movie.posterUrl}
             alt={movie.title}
             className="rounded-xl w-full h-80 object-cover"
             onError={(e) => { e.currentTarget.src = "/images/placeholder.jpg"; }}

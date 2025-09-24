@@ -6,42 +6,66 @@ const Navbar = ({ setSelectedFeature, cartItems, searchQuery, setSearchQuery, go
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="flex items-center justify-between p-4 bg-black bg-opacity-70 backdrop-blur-md shadow-md fixed w-full z-50">
-      <div className="flex items-center gap-4">
-        <FiMenu
-          className="text-2xl cursor-pointer text-white"
-          onClick={() => setMenuOpen(!menuOpen)}
-        />
-        {menuOpen && (
-          <div className="absolute top-14 left-4 bg-gray-900 text-white shadow-lg p-4 rounded-xl flex flex-col gap-2">
-            <button onClick={() => { setSelectedFeature("clothing"); setMenuOpen(false); }}>Clothing</button>
-            <button onClick={() => { setSelectedFeature("furniture"); setMenuOpen(false); }}>Furniture</button>
-            <button onClick={() => { setSelectedFeature("places"); setMenuOpen(false); }}>Places</button>
-          </div>
-        )}
-      </div>
-
-      <h1
-        className="text-4xl font-extrabold text-purple-400 tracking-widest drop-shadow-lg cursor-pointer"
-        style={{ fontFamily: "'Orbitron', sans-serif" }}
-        onClick={() => goHome()}
-      >
-        Film Finder
-      </h1>
-
-      <div className="flex items-center gap-4">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search movies..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 pr-4 py-1 rounded-full border border-gray-300 focus:outline-none"
+    <nav className="fixed w-full z-50 bg-gradient-to-r from-purple-900 via-indigo-900 to-black shadow-lg">
+      <div className="flex items-center justify-between px-6 py-4">
+        
+        {/* Left menu */}
+        <div className="flex items-center gap-4 relative">
+          <FiMenu
+            className="text-2xl text-white cursor-pointer hover:text-purple-400 transition"
+            onClick={() => setMenuOpen(!menuOpen)}
           />
-          <FiSearch className="absolute left-2 top-1.5 text-gray-400" />
+          {menuOpen && (
+            <div className="absolute top-12 left-0 bg-black/90 text-white shadow-xl p-4 rounded-xl flex flex-col gap-2 min-w-[120px]">
+              <button className="hover:text-purple-400 transition" onClick={() => { setSelectedFeature("clothing"); setMenuOpen(false); }}>Clothing</button>
+              <button className="hover:text-purple-400 transition" onClick={() => { setSelectedFeature("furniture"); setMenuOpen(false); }}>Furniture</button>
+              <button className="hover:text-purple-400 transition" onClick={() => { setSelectedFeature("places"); setMenuOpen(false); }}>Places</button>
+            </div>
+          )}
         </div>
-        <FiUser className="text-2xl cursor-pointer text-white" />
-        <FiShoppingCart className="text-2xl cursor-pointer text-white" onClick={() => openCart()} />
+
+        {/* Title */}
+        <h1
+          className="text-4xl font-extrabold text-white tracking-wider cursor-pointer hover:text-purple-400 transition"
+          style={{ fontFamily: "'Orbitron', sans-serif" }}
+          onClick={() => goHome()}
+        >
+          Film Finder
+        </h1>
+
+        {/* Right icons + search */}
+        <div className="flex items-center gap-4 relative">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="
+                pl-10 pr-4 py-2 
+                rounded-full 
+                border border-gray-300 
+                focus:outline-none 
+                text-black 
+                placeholder-gray-500 
+                bg-white/80 
+                backdrop-blur-sm
+                focus:ring-2 
+                focus:ring-purple-500 
+                focus:border-transparent
+                transition
+                duration-300
+                font-semibold
+                text-lg
+                w-48 sm:w-64
+              "
+            />
+            <FiSearch className="absolute left-3 top-2.5 text-gray-600 text-xl" />
+          </div>
+          <FiUser className="text-white text-2xl cursor-pointer hover:text-purple-400 transition" />
+          <FiShoppingCart className="text-white text-2xl cursor-pointer hover:text-purple-400 transition" onClick={openCart} />
+        </div>
+
       </div>
     </nav>
   );
