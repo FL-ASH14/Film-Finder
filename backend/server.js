@@ -5,8 +5,14 @@ const app = express();
 const PORT = 4000;
 
 app.use(cors());
+app.use(express.json()); // Essential for handling POST request bodies
 
-// Movies dataset with Imgur-hosted images
+// --- SIMULATED IN-MEMORY DATABASE ---
+let nextUserId = 1;
+const users = []; // Stores { id, username, password, savedCart: [] }
+// ------------------------------------
+
+// Movies dataset with ALL item data structures updated
 const movies = [
   {
     id: 1,
@@ -19,9 +25,30 @@ const movies = [
         title: 'Opening Street Dance',
         thumbnail: '/images/dance.jpg',
         items: [
-          { thumbnail:'/images/yellow.png',name: 'Mia’s Dress', type: 'clothing', buyLink: 'https://example.com/dress' },
-          { name: 'Street Lamp', type: 'furniture', mapLink: 'https://maps.google.com' },
-          { name: 'Los Angeles Street', type: 'place', mapLink: 'https://maps.google.com' }
+          { 
+            itemThumbnail:'/images/Yellow.jpg', // Path updated and key corrected
+            name: 'Mia’s Dress', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/dress', 
+            description: "A vibrant yellow vintage-style dress.", 
+            timestamp: "00:03:15"
+          },
+          { 
+            itemThumbnail: '/images/lamp.jpg', 
+            name: 'Street Lamp', 
+            type: 'furniture', 
+            mapLink: 'https://maps.google.com',
+            description: "An iconic, LA city street lamp.", 
+            timestamp: "00:03:40"
+          },
+          { 
+            itemThumbnail: '/images/street.jpg',
+            name: 'Los Angeles Street', 
+            type: 'places', 
+            mapLink: 'https://maps.google.com',
+            description: "The stunning location of the opening freeway dance.", 
+            timestamp: "00:01:00" 
+          }
         ]
       },
       {
@@ -29,7 +56,14 @@ const movies = [
         title: 'Planetarium Dance',
         thumbnail: '/images/planet.jpg',
         items: [
-          { name: 'Sebastian’s Jacket', type: 'clothing', buyLink: 'https://example.com/jacket' }
+          { 
+            itemThumbnail: '/images/jacket.jpg',
+            name: 'Sebastian’s Jacket', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/jacket',
+            description: "A light brown blazer, perfect for jazz clubs.", 
+            timestamp: "01:05:22"
+          }
         ]
       }
     ]
@@ -45,8 +79,22 @@ const movies = [
         title: 'Dream Heist',
         thumbnail: '/images/DreamSequence.jpg',
         items: [
-          { name: 'Cobb’s Suit', type: 'clothing', buyLink: 'https://example.com/suit' },
-          { name: 'Paris Street', type: 'place', mapLink: 'https://maps.google.com' }
+          { 
+            itemThumbnail: '/images/suit.jpg',
+            name: 'Cobb’s Suit', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/suit',
+            description: "A tailored, dark black business suit.", 
+            timestamp: "00:15:00"
+          },
+          { 
+            itemThumbnail: '/images/paris.jpg',
+            name: 'Paris Street', 
+            type: 'places', 
+            mapLink: 'https://maps.google.com',
+            description: "The street where the city folds.", 
+            timestamp: "00:40:00" 
+          }
         ]
       },
       {
@@ -54,7 +102,14 @@ const movies = [
         title: 'Rotating Hall',
         thumbnail: '/images/inception_Scene1.jpg',
         items: [
-          { name: 'Furniture Set', type: 'furniture', buyLink: 'https://example.com/furniture' }
+          { 
+            itemThumbnail: '/images/table.jpg',
+            name: 'Furniture Set', 
+            type: 'furniture', 
+            buyLink: 'https://example.com/furniture',
+            description: "A set of gravity-defying hotel room furniture.", 
+            timestamp: "01:25:30"
+          }
         ]
       }
     ]
@@ -70,8 +125,22 @@ const movies = [
         title: 'Red Pill or Blue Pill',
         thumbnail: '/images/pill.jpeg',
         items: [
-          { name: 'Neo’s Jacket', type: 'clothing', buyLink: 'https://example.com/neo-jacket' },
-          { name: 'Morpheus Office', type: 'place', mapLink: 'https://maps.google.com' }
+          { 
+            itemThumbnail: '/images/neo.jpg',
+            name: 'Neo’s Jacket', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/neo-jacket',
+            description: "Neo's iconic black trench coat.", 
+            timestamp: "00:30:10"
+          },
+          { 
+            itemThumbnail: '/images/office.jpg',
+            name: 'Morpheus Office', 
+            type: 'places', 
+            mapLink: 'https://maps.google.com',
+            description: "The location of the critical choice.", 
+            timestamp: "00:30:00"
+          }
         ]
       },
       {
@@ -79,7 +148,14 @@ const movies = [
         title: 'Lobby Shootout',
         thumbnail: '/images/lobby.jpg',
         items: [
-          { name: 'Gun Props', type: 'furniture', buyLink: 'https://example.com/gun-props' }
+          { 
+            itemThumbnail: '/images/prop.jpg',
+            name: 'Gun Props', 
+            type: 'furniture', 
+            buyLink: 'https://example.com/gun-props',
+            description: "A replica prop used in the famous shootout.", 
+            timestamp: "01:45:00"
+          }
         ]
       }
     ]
@@ -95,9 +171,30 @@ const movies = [
         title: 'Bench Talk',
         thumbnail: '/images/bench.jpg',
         items: [
-          { name: 'Forrest’s Jacket', type: 'clothing', buyLink: 'https://example.com/forrest-jacket' },
-          { name: 'Park Bench', type: 'furniture', mapLink: 'https://maps.google.com' },
-          { name: 'Green Park', type: 'place', mapLink: 'https://maps.google.com' }
+          { 
+            itemThumbnail: '/images/gump.jpg',
+            name: 'Forrest’s Jacket', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/forrest-jacket',
+            description: "Forrest’s simple, plaid shirt and jacket ensemble.", 
+            timestamp: "00:05:00"
+          },
+          { 
+            itemThumbnail: '/images/sit.jpg',
+            name: 'Park Bench', 
+            type: 'furniture', 
+            mapLink: 'https://maps.google.com',
+            description: "A historical park bench model.", 
+            timestamp: "00:04:30"
+          },
+          { 
+            itemThumbnail: '/images/park.jpg',
+            name: 'Green Park', 
+            type: 'places', 
+            mapLink: 'https://maps.google.com',
+            description: "The general location where Forrest tells his story.", 
+            timestamp: "00:01:00"
+          }
         ]
       }
     ]
@@ -113,16 +210,90 @@ const movies = [
         title: 'Ship Deck',
         thumbnail: '/images/deck.jpg',
         items: [
-          { name: 'Rose’s Dress', type: 'clothing', buyLink: 'https://example.com/rose-dress' },
-          { name: 'Ship Deck', type: 'furniture', mapLink: 'https://maps.google.com' },
-          { name: 'Atlantic Ocean', type: 'place', mapLink: 'https://maps.google.com' }
+          { 
+            itemThumbnail: '/images/pink.jpg',
+            name: 'Rose’s Dress', 
+            type: 'clothing', 
+            buyLink: 'https://example.com/rose-dress',
+            description: "Rose's elegant pink and white dinner dress.", 
+            timestamp: "01:10:00"
+          },
+          { 
+            itemThumbnail: '/images/rail.jpg',
+            name: 'Ship Deck Railing', 
+            type: 'furniture', 
+            mapLink: 'https://maps.google.com',
+            description: "The replica deck railing for the ship.", 
+            timestamp: "01:15:30"
+          },
+          { 
+            itemThumbnail: '/images/ocean.jpg',
+            name: 'Atlantic Ocean', 
+            type: 'places', 
+            mapLink: 'https://maps.google.com',
+            description: "The vast North Atlantic.", 
+            timestamp: "01:16:00"
+          }
         ]
       }
     ]
   }
 ];
 
-// Routes
+// --- USER AUTH ROUTES ---
+
+// POST /api/signup - Create a new user (simulated)
+app.post('/api/signup', (req, res) => {
+  const { username, password } = req.body;
+  if (users.find(u => u.username === username)) {
+    return res.status(400).json({ error: 'Username already exists' });
+  }
+  const newUser = { id: nextUserId++, username, password, savedCart: [] };
+  users.push(newUser);
+  // In a real app, you would generate a JWT token here
+  res.json({ message: 'User created successfully', user: { id: newUser.id, username: newUser.username, savedCart: newUser.savedCart } });
+});
+
+// POST /api/signin - Log in a user (simulated)
+app.post('/api/signin', (req, res) => {
+  const { username, password } = req.body;
+  const user = users.find(u => u.username === username && u.password === password);
+  if (!user) {
+    return res.status(401).json({ error: 'Invalid username or password' });
+  }
+  // In a real app, you would generate a JWT token here
+  res.json({ message: 'Login successful', user: { id: user.id, username: user.username, savedCart: user.savedCart } });
+});
+
+// --- CART PERSISTENCE ROUTES ---
+
+// POST /api/cart/:userId - Save the user's current cart
+app.post('/api/cart/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const { cart } = req.body;
+  const user = users.find(u => u.id === userId);
+  
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  user.savedCart = cart; // Overwrite the saved cart
+  res.json({ message: 'Cart saved successfully', savedCart: user.savedCart });
+});
+
+// GET /api/cart/:userId - Load the user's saved cart
+app.get('/api/cart/:userId', (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const user = users.find(u => u.id === userId);
+
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  res.json({ savedCart: user.savedCart });
+});
+
+// --- MOVIE/SCENE ROUTES (keep your existing routes) ---
 app.get('/api/movies', (req, res) => res.json(movies));
 
 app.get('/api/movies/:id/scenes/:sceneId', (req, res) => {

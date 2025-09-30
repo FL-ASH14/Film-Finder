@@ -1,8 +1,9 @@
 // src/components/Navbar.jsx
 import React, { useState } from "react";
-import { FiMenu, FiShoppingCart, FiUser, FiSearch } from "react-icons/fi";
+import { FiMenu, FiShoppingCart, FiUser, FiSearch, FiLogOut } from "react-icons/fi";
 
-const Navbar = ({ setSelectedFeature, cartItems, searchQuery, setSearchQuery, goHome, openCart }) => {
+// Accept new props: currentUser, openAuthModal, handleSignOut
+const Navbar = ({ setSelectedFeature, cartItems, searchQuery, setSearchQuery, goHome, openCart, currentUser, openAuthModal, handleSignOut }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -62,7 +63,23 @@ const Navbar = ({ setSelectedFeature, cartItems, searchQuery, setSearchQuery, go
             />
             <FiSearch className="absolute left-3 top-2.5 text-gray-600 text-xl" />
           </div>
-          <FiUser className="text-white text-2xl cursor-pointer hover:text-purple-400 transition" />
+          
+          {/* User Icon or Username/Logout */}
+          {currentUser ? (
+            <div className="flex items-center gap-2">
+              <span className="text-white font-semibold hidden sm:inline">{currentUser.username}</span>
+              <FiLogOut 
+                className="text-white text-2xl cursor-pointer hover:text-red-400 transition"
+                onClick={handleSignOut}
+              />
+            </div>
+          ) : (
+            <FiUser 
+              className="text-white text-2xl cursor-pointer hover:text-purple-400 transition"
+              onClick={openAuthModal} // Open the new auth modal
+            />
+          )}
+
           <FiShoppingCart className="text-white text-2xl cursor-pointer hover:text-purple-400 transition" onClick={openCart} />
         </div>
 
