@@ -1,71 +1,60 @@
-// src/components/Carousel.jsx
-import React, { useEffect, useRef, useState } from "react";
+// src/components/MovieCarousel.jsx
+import React, { useEffect, useState } from "react";
 
-const Carousel = () => {
-  const carouselRef = useRef(null);
+const MovieCarousel = () => {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    // List all image filenames in your public/images folder
     const imageFiles = [
       "inception.jpg",
       "land.jpg",
       "Matrix.jpg",
       "titanic.jpg",
-      // Add more filenames here
+      "forest.jpg",
     ];
 
-    // Prepend "/images/" to each filename
     const imgPaths = imageFiles.map((img) => `/images/${img}`);
     setImages(imgPaths);
   }, []);
 
-  useEffect(() => {
-    const carousel = carouselRef.current;
-    let scrollAmount = 0;
-
-    const scrollStep = () => {
-      if (!carousel) return;
-      scrollAmount += 1; // pixels per frame
-      if (scrollAmount >= carousel.scrollWidth / 2) {
-        scrollAmount = 0; // reset for seamless loop
-      }
-      carousel.scrollTo({
-        left: scrollAmount,
-        behavior: "smooth",
-      });
-    };
-
-    const interval = setInterval(scrollStep, 30); // adjust speed
-    return () => clearInterval(interval);
-  }, [images]);
-
-  // Duplicate images for seamless scrolling
   const loopedImages = [...images, ...images];
 
   return (
-    <div className="relative w-full overflow-hidden">
-      <div
-        ref={carouselRef}
-        className="flex space-x-4 overflow-x-auto scrollbar-none"
-        style={{ scrollBehavior: "smooth" }}
-      >
-        {loopedImages.map((src, index) => (
-          <div
-            key={index}
-            className="flex-shrink-0 w-60 h-80 rounded-lg overflow-hidden shadow-lg relative"
-          >
-            <img
-              src={src}
-              alt={`Slide ${index + 1}`}
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
+    <>
+      <style>
+        {`
+          @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}
+      </style>
+
+      <div className="relative w-full overflow-hidden">
+        {/*
+          MODIFIED: Replaced 'animate-reverse' with 'animate-alternate'.
+          This makes the animation play forwards, then backwards, creating a smooth
+          back-and-forth "ping-pong" effect.
+        */}
+        <div 
+          className="flex flex-nowrap space-x-4 will-change-transform animate-[scroll_24s_linear_infinite] animate-alternate"
+        >
+          {loopedImages.map((src, index) => (
+            <div
+              key={index}
+              className="flex-shrink-0 w-60 h-80 rounded-lg overflow-hidden shadow-lg"
+            >
+              <img
+                src={src}
+                alt={`Slide ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default Carousel;
-
+export default MovieCarousel;

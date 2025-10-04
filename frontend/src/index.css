@@ -2,14 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Set Inter font globally */
 body {
-  @apply bg-gradient-to-b from-purple-200 via-pink-200 to-yellow-100;
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
+
+/* Ensure the root element doesn't interfere */
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar and other utilities */
 .scrollbar-none::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 .scrollbar-none {
-  -ms-overflow-style: none; /* IE, Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

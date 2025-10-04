@@ -3,10 +3,12 @@ import React from "react";
 
 const MovieGrid = ({ movies, onSelect }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-8">
+    // MODIFIED: Added xl:grid-cols-5 for very large screens.
+    // It already had breakpoints for small (sm), medium (md), and large (lg) screens.
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 mt-8">
       {movies.map(movie => (
         <div
-          key={movie._id}
+          key={movie.id} // Assuming movie.id is the unique key
           className="cursor-pointer rounded-2xl bg-white/10 backdrop-blur-md shadow-lg hover:shadow-purple-500/50 transition transform hover:-translate-y-2 hover:scale-105 p-4 border border-white/20"
           onClick={() => onSelect(movie)}
         >

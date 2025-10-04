@@ -9,7 +9,8 @@ app.use(express.json()); // Essential for handling POST request bodies
 
 // --- SIMULATED IN-MEMORY DATABASE ---
 let nextUserId = 1;
-const users = []; // Stores { id, username, password, savedCart: [] }
+// UPDATED: Added profileName and profileAvatar to the user object
+const users = []; // Stores { id, username, password, profileName, profileAvatar, savedCart: [] }
 // ------------------------------------
 
 // Movies dataset with ALL item data structures updated
@@ -242,27 +243,49 @@ const movies = [
 
 // --- USER AUTH ROUTES ---
 
-// POST /api/signup - Create a new user (simulated)
+// POST /api/signup - UPDATED to include profile info
 app.post('/api/signup', (req, res) => {
-  const { username, password } = req.body;
-  if (users.find(u => u.username === username)) {
-    return res.status(400).json({ error: 'Username already exists' });
+  // Now expecting profileName and profileAvatar in the request
+  const { username, password, profileName, profileAvatar } = req.body;
+
+  if (!username || !password || !profileName || !profileAvatar) {
+    return res.status(400).json({ error: 'Missing required fields for signup.' });
   }
-  const newUser = { id: nextUserId++, username, password, savedCart: [] };
+
+  if (users.find(u => u.username === username)) {
+    return res.status(400).json({ error: 'Login Name already exists' });
+  }
+
+  const newUser = { 
+    id: nextUserId++, 
+    username, 
+    password, 
+    profileName, 
+    profileAvatar, 
+    savedCart: [] 
+  };
   users.push(newUser);
-  // In a real app, you would generate a JWT token here
-  res.json({ message: 'User created successfully', user: { id: newUser.id, username: newUser.username, savedCart: newUser.savedCart } });
+
+  // Return the full user object, excluding the password
+  const userToReturn = { ...newUser };
+  delete userToReturn.password;
+
+  res.json({ message: 'User created successfully', user: userToReturn });
 });
 
-// POST /api/signin - Log in a user (simulated)
+// POST /api/signin - UPDATED to return profile info
 app.post('/api/signin', (req, res) => {
   const { username, password } = req.body;
   const user = users.find(u => u.username === username && u.password === password);
   if (!user) {
-    return res.status(401).json({ error: 'Invalid username or password' });
+    return res.status(401).json({ error: 'Invalid Login Name or password' });
   }
-  // In a real app, you would generate a JWT token here
-  res.json({ message: 'Login successful', user: { id: user.id, username: user.username, savedCart: user.savedCart } });
+  
+  // Return the full user object, excluding the password
+  const userToReturn = { ...user };
+  delete userToReturn.password;
+  
+  res.json({ message: 'Login successful', user: userToReturn });
 });
 
 // --- CART PERSISTENCE ROUTES ---
@@ -293,7 +316,7 @@ app.get('/api/cart/:userId', (req, res) => {
   res.json({ savedCart: user.savedCart });
 });
 
-// --- MOVIE/SCENE ROUTES (keep your existing routes) ---
+// --- MOVIE/SCENE ROUTES ---
 app.get('/api/movies', (req, res) => res.json(movies));
 
 app.get('/api/movies/:id/scenes/:sceneId', (req, res) => {
