@@ -1,10 +1,9 @@
 // src/pages/CartPage.jsx
 import React from "react";
 
-const CartPage = ({ cartItems, onBack, onRemoveItem }) => {
+const CartPage = ({ cartItems, onBack, onRemoveItem, onCloseMusic }) => {
   return (
     <div className="p-8 pt-28 relative z-10">
-      {/* Back Button */}
       <button
         onClick={onBack}
         className="mb-6 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition font-semibold"
@@ -43,7 +42,7 @@ const CartPage = ({ cartItems, onBack, onRemoveItem }) => {
                           href={item.buyLink} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          // --- MODIFIED: Size reverted ---
+                          onClick={onCloseMusic}
                           className="px-3 py-1 bg-pink-500 text-white rounded-full hover:bg-pink-600 text-sm transition"
                       >
                           Buy Link
@@ -54,7 +53,7 @@ const CartPage = ({ cartItems, onBack, onRemoveItem }) => {
                           href={item.mapLink} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          // --- MODIFIED: Size reverted ---
+                          onClick={onCloseMusic}
                           className="px-3 py-1 bg-green-500 text-white rounded-full hover:bg-green-600 text-sm transition"
                       >
                           Map Link
@@ -62,7 +61,6 @@ const CartPage = ({ cartItems, onBack, onRemoveItem }) => {
                   )}
               </div>
               
-              {/* --- MODIFIED: Size reverted and color changed to orange --- */}
               <button 
                 onClick={() => onRemoveItem(idx)}
                 className="mt-4 w-full px-4 py-2 bg-blue-700 text-white font-semibold rounded-full hover:bg-orange-700 transition"

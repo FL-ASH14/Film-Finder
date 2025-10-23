@@ -1,17 +1,21 @@
 // src/components/Navbar.jsx
 import React, { useState, useRef, useEffect } from "react";
-// SVGs are included here for brevity as they were in the previous step
+
+// SVGs are included here for brevity
 const FiMenu = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
 const FiShoppingCart = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> );
 const FiUser = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> );
 const FiSearch = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> );
 const FiCamera = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg> );
+const FiVolume2 = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg> );
+const FiVolumeX = (props) => ( <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg> );
 
 
 const Navbar = ({ 
   menuOpen, setMenuOpen, onSelectFeature, cartItems, 
   searchQuery, setSearchQuery, goHome, onOpenCart, onOpenCameraPage,
-  currentUser, openAuthModal, handleSignOut, movies, onSelectMovieFromSearch
+  currentUser, openAuthModal, handleSignOut, movies, onSelectMovieFromSearch,
+  isMusicEnabled, onToggleMusic
 }) => {
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -33,7 +37,6 @@ const Navbar = ({
 
   return (
     <nav className="fixed w-full z-50 bg-gradient-to-r from-purple-900 via-indigo-900 to-black shadow-lg">
-      {/* MODIFIED: Padding is smaller on mobile (px-2) and larger on bigger screens (sm:px-6) */}
       <div className="flex items-center justify-between px-2 sm:px-6 py-4">
         <div className="flex items-center gap-4 relative">
           <FiMenu ref={menuIconRef} className="text-2xl text-white cursor-pointer hover:text-purple-400 transition" onClick={() => setMenuOpen(!menuOpen)} />
@@ -46,15 +49,12 @@ const Navbar = ({
           )}
         </div>
         
-        {/* MODIFIED: Title is smaller on mobile (text-2xl) and grows on larger screens */}
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white tracking-wider cursor-pointer hover:text-purple-400 transition whitespace-nowrap" style={{ fontFamily: "'Orbitron', sans-serif" }} onClick={() => goHome()}>
           Film Finder
         </h1>
         
-        {/* MODIFIED: Gaps between icons are smaller on mobile and grow with screen size */}
         <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
           <div className="relative">
-            {/* MODIFIED: Search bar is narrower on small screens and wider on larger ones */}
             <input ref={searchInputRef} type="text" placeholder="Search..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onFocus={() => setIsSearchFocused(true)} onBlur={() => setIsSearchFocused(false)} className="pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none text-black placeholder-gray-500 bg-white/80 backdrop-blur-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-300 font-semibold text-lg w-28 sm:w-40 md:w-64" style={isSearchFocused && searchQuery === "" ? { paddingRight: '2.5rem' } : {}} />
             <FiSearch className="absolute left-3 top-2.5 text-gray-600 text-xl cursor-pointer hover:text-purple-500 transition" onClick={handleSearchIconClick} />
             {isSearchFocused && searchQuery === "" && (
@@ -73,11 +73,13 @@ const Navbar = ({
               </div>
             )}
           </div>
+           <button onClick={onToggleMusic} title={isMusicEnabled ? "Mute All Music" : "Unmute All Music"} className="text-white hover:text-purple-400 transition">
+            {isMusicEnabled ? <FiVolume2 /> : <FiVolumeX />}
+          </button>
           <div className="relative">
             {currentUser ? (
               <div className="flex items-center gap-2 cursor-pointer" onClick={() => setProfileMenuOpen(!profileMenuOpen)}>
                 <img src={currentUser.profileAvatar} alt={currentUser.profileName} className="w-10 h-10 rounded-full object-cover border-2 border-purple-400"/>
-                {/* This was already responsive! The name is hidden on small screens. */}
                 <span className="text-white font-semibold hidden sm:block">{currentUser.profileName}</span>
               </div>
             ) : ( <FiUser className="text-white text-2xl cursor-pointer hover:text-purple-400 transition" onClick={openAuthModal} /> )}
